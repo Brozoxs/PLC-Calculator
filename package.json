@@ -1,0 +1,38 @@
+{
+  "name": "conveyor-plc-calculator",
+  "version": "1.0.0",
+  "description": "PLC programming and testing hours calculator for conveyor installations",
+  "main": "src/index.tsx",
+  "scripts": {
+    "start": "webpack serve --mode development",
+    "build": "webpack --mode production",
+    "test": "jest",
+    "dev": "webpack serve --mode development"
+  },
+  "keywords": ["plc", "conveyor", "calculator", "industrial", "automation"],
+  "author": "Senior Software Engineer",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@types/jest": "^29.5.0",
+    "typescript": "^5.0.0",
+    "webpack": "^5.80.0",
+    "webpack-cli": "^5.0.0",
+    "webpack-dev-server": "^4.15.0",
+    "html-webpack-plugin": "^5.5.0",
+    "css-loader": "^6.8.0",
+    "style-loader": "^3.3.0",
+    "babel-loader": "^9.1.0",
+    "@babel/core": "^7.23.0",
+    "@babel/preset-env": "^7.22.0",
+    "@babel/preset-react": "^7.22.0",
+    "@babel/preset-typescript": "^7.22.0",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.1.0"
+  }
+}
