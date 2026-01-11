@@ -39,6 +39,7 @@ De applicatie is dan beschikbaar op `http://localhost:3000`.
 
 ### 1. Project Opzetten
 - Geef je project een naam
+- Configureer systeem componenten (PLC's, HMI's, host systeem, externe bedrijven)
 - Stel de efficiëntiewinst parameters in (standaard: 15% besparing per extra conveyor)
 
 ### 2. Conveyors Toevoegen
@@ -74,6 +75,18 @@ Standaard configuratie in `src/conveyorTypesConfig.ts`:
 {
   efficiencyGainFactor: 0.15,   // 15% besparing per extra conveyor
   maxEfficiencyUnits: 10        // Maximaal 10 conveyors krijgen winst
+}
+```
+
+### Systeem Componenten Uren
+Standaard uren per systeem component:
+
+```typescript
+{
+  hoursPerPlc: 12,              // 12 uur per PLC
+  hoursPerCabinetHmi: 8,        // 8 uur per Cabinet HMI
+  hoursPerMobileHmi: 6,         // 6 uur per Mobile HMI
+  hostSystemHoursPerConveyor: 4 // 4 uur per conveyor bij host systeem
 }
 ```
 
@@ -132,9 +145,41 @@ De applicatie gebruikt moderne CSS met CSS custom properties voor theming:
 - **Toegankelijkheid** met juiste contrast ratios
 - **Moderne UI** met schaduwen en afgeronde hoeken
 
+## 📚 Technische Dependencies
+
+### Export Bibliotheeken
+- **xlsx**: Voor Excel (.xlsx) bestandsgeneratie
+- **jspdf**: Voor PDF document creatie
+- **jspdf-autotable**: Voor PDF tabellen en professionele layout
+
+### Development Tools
+- **TypeScript**: Voor typeveiligheid en betere ontwikkelervaring
+- **Webpack + Babel**: Voor moderne JavaScript compilatie
+- **CSS Modules**: Voor component-specifieke styling
+
+## 📊 Export Functionaliteit
+
+De applicatie ondersteunt het exporteren van projectresultaten naar verschillende formaten:
+
+### Export Opties
+- **CSV Export**: Comma-Separated Values voor spreadsheet applicaties
+- **Excel Export**: Native .xlsx bestanden met opgemaakte werkbladen
+- **PDF Export**: Professionele rapporten met tabellen en samenvattingen
+
+### Export Inhoud
+- Project naam en berekeningsdatum
+- Gedetailleerde uitsplitsing per conveyor type
+- Totaaloverzichten voor programmeer- en testuren
+- Efficiëntiewinst informatie
+
+### Gebruik
+1. Voer uw conveyor project in
+2. Klik op "Bereken Uren"
+3. Gebruik de export knoppen in de resultaten sectie
+4. Bestanden worden automatisch gedownload naar uw Downloads map
+
 ## 🔮 Toekomstige Uitbreidingen
 
-- **Export functionaliteit** naar Excel/PDF
 - **Database integratie** voor opslag
 - **Gebruikersbeheer** met rollen
 - **Historie** van berekeningen

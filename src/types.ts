@@ -56,22 +56,88 @@ export interface ConveyorCalculation {
   averageTestingHoursPerConveyor: number;
 }
 
+// Interface voor systeem componenten (PLC's, HMI's, etc.)
+export interface SystemComponents {
+  // Aantal PLC's in het project
+  plcCount: number;
+
+  // Aantal Cabinet HMI's
+  cabinetHmiCount: number;
+
+  // Aantal Mobile HMI's
+  mobileHmiCount: number;
+
+  // Of er een host systeem aanwezig is
+  hasHostSystem: boolean;
+
+  // Extra uren voor externe bedrijven
+  externalCompanyHours: number;
+}
+
+// Interface voor systeem componenten uren
+export interface SystemComponentHours {
+  // Uren per PLC
+  hoursPerPlc: number;
+
+  // Uren per Cabinet HMI
+  hoursPerCabinetHmi: number;
+
+  // Uren per Mobile HMI
+  hoursPerMobileHmi: number;
+
+  // Extra uren per conveyor bij host systeem
+  hostSystemHoursPerConveyor: number;
+}
+
+// Interface voor systeem componenten berekening
+export interface SystemCalculation {
+  // De systeem componenten
+  components: SystemComponents;
+
+  // De uur configuratie
+  hoursConfig: SystemComponentHours;
+
+  // Totaal PLC uren
+  totalPlcHours: number;
+
+  // Totaal HMI uren
+  totalHmiHours: number;
+
+  // Totaal host systeem uren
+  totalHostSystemHours: number;
+
+  // Totaal externe bedrijven uren
+  totalExternalHours: number;
+
+  // Totaal systeem uren
+  totalSystemHours: number;
+}
+
 // Interface voor het totale project
 export interface Project {
   // Naam van het project
   name: string;
 
+  // Systeem componenten
+  systemComponents: SystemComponents;
+
   // Lijst van conveyors in het project
   conveyors: ProjectConveyor[];
 
-  // Totaal aantal programmeeruren voor het hele project
+  // Totaal aantal programmeeruren voor het hele project (inclusief systeem)
   totalProgrammingHours: number;
 
   // Totaal aantal testuren voor het hele project
   totalTestingHours: number;
 
+  // Totaal aantal systeem uren
+  totalSystemHours: number;
+
   // Gedetailleerde berekeningen per conveyor type
   calculations: ConveyorCalculation[];
+
+  // Systeem componenten berekening
+  systemCalculation: SystemCalculation;
 
   // Datum van laatste berekening
   lastCalculated: Date;
@@ -91,4 +157,21 @@ export interface EfficiencyConfig {
 export const DEFAULT_EFFICIENCY_CONFIG: EfficiencyConfig = {
   efficiencyGainFactor: 0.15, // 15% efficiëntiewinst per extra conveyor
   maxEfficiencyUnits: 10, // Maximaal 10 conveyors krijgen efficiëntiewinst
+};
+
+// Default configuratie voor systeem componenten uren
+export const DEFAULT_SYSTEM_HOURS: SystemComponentHours = {
+  hoursPerPlc: 12,              // 12 uur per PLC
+  hoursPerCabinetHmi: 2,        // 2 uur per Cabinet HMI
+  hoursPerMobileHmi: 8,         // 8 uur per Mobile HMI
+  hostSystemHoursPerConveyor: 4 // 4 uur per conveyor bij host systeem
+};
+
+// Default systeem componenten
+export const DEFAULT_SYSTEM_COMPONENTS: SystemComponents = {
+  plcCount: 0,
+  cabinetHmiCount: 0,
+  mobileHmiCount: 0,
+  hasHostSystem: false,
+  externalCompanyHours: 0,
 };

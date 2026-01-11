@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { ProjectConveyor, EfficiencyConfig } from '../types';
-import { CONVEYOR_TYPES } from '../conveyorTypesConfig';
+import { ProjectConveyor, SystemComponents, EfficiencyConfig } from '../types';
+import { CONVEYOR_TYPES, SYSTEM_HOURS_CONFIG } from '../conveyorTypesConfig';
 
 /**
  * Props interface voor de ProjectInput component
@@ -8,6 +8,8 @@ import { CONVEYOR_TYPES } from '../conveyorTypesConfig';
 interface ProjectInputProps {
   projectName: string;
   onProjectNameChange: (name: string) => void;
+  systemComponents: SystemComponents;
+  onSystemComponentsChange: (components: SystemComponents) => void;
   projectConveyors: ProjectConveyor[];
   onAddConveyor: (conveyorTypeId: string, quantity: number) => void;
   onRemoveConveyor: (conveyorTypeId: string) => void;
@@ -29,9 +31,11 @@ interface ProjectInputProps {
  * - Efficiëntiewinst configuratie
  * - Berekeningsknoppen
  */
-export const ProjectInput: React.FC<ProjectInputProps> = ({
+export const ProjectInput = ({
   projectName,
   onProjectNameChange,
+  systemComponents,
+  onSystemComponentsChange,
   projectConveyors,
   onAddConveyor,
   onRemoveConveyor,
@@ -40,7 +44,7 @@ export const ProjectInput: React.FC<ProjectInputProps> = ({
   onReset,
   efficiencyConfig,
   onEfficiencyConfigChange,
-}) => {
+}: ProjectInputProps) => {
   // Lokale state voor nieuwe conveyor toevoegen
   const [selectedConveyorType, setSelectedConveyorType] = useState<string>('');
   const [newConveyorQuantity, setNewConveyorQuantity] = useState<number>(1);
@@ -87,6 +91,109 @@ export const ProjectInput: React.FC<ProjectInputProps> = ({
               placeholder="Voer project naam in..."
               className="form-control"
             />
+          </div>
+
+          {/* Systeem Componenten */}
+          <div className="system-components">
+            <h3>Systeem Componenten</h3>
+            <div className="system-grid">
+              <div className="form-group">
+                <label htmlFor="plcCount">Aantal PLC's:</label>
+                <input
+                  type="number"
+                  id="plcCount"
+                  value={systemComponents.plcCount}
+                  onChange={(e) => onSystemComponentsChange({
+                    ...systemComponents,
+                    plcCount: parseInt(e.target.value) || 0
+                  })}
+                  min="0"
+                  max="50"
+                  className="form-control"
+                />
+                <small className="form-text">
+                  {SYSTEM_HOURS_CONFIG.hoursPerPlc} uur per PLC
+                </small>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="cabinetHmiCount">Aantal Cabinet HMI's:</label>
+                <input
+                  type="number"
+                  id="cabinetHmiCount"
+                  value={systemComponents.cabinetHmiCount}
+                  onChange={(e) => onSystemComponentsChange({
+                    ...systemComponents,
+                    cabinetHmiCount: parseInt(e.target.value) || 0
+                  })}
+                  min="0"
+                  max="50"
+                  className="form-control"
+                />
+                <small className="form-text">
+                  {SYSTEM_HOURS_CONFIG.hoursPerCabinetHmi} uur per Cabinet HMI
+                </small>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="mobileHmiCount">Aantal Mobile HMI's:</label>
+                <input
+                  type="number"
+                  id="mobileHmiCount"
+                  value={systemComponents.mobileHmiCount}
+                  onChange={(e) => onSystemComponentsChange({
+                    ...systemComponents,
+                    mobileHmiCount: parseInt(e.target.value) || 0
+                  })}
+                  min="0"
+                  max="50"
+                  className="form-control"
+                />
+                <small className="form-text">
+                  {SYSTEM_HOURS_CONFIG.hoursPerMobileHmi} uur per Mobile HMI
+                </small>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="externalCompanyHours">Externe Bedrijven Uren:</label>
+                <input
+                  type="number"
+                  id="externalCompanyHours"
+                  value={systemComponents.externalCompanyHours}
+                  onChange={(e) => onSystemComponentsChange({
+                    ...systemComponents,
+                    externalCompanyHours: parseFloat(e.target.value) || 0
+                  })}
+                  min="0"
+                  step="0.5"
+                  className="form-control"
+                />
+                <small className="form-text">
+                  Extra uren voor externe bedrijven
+                </small>
+              </div>
+            </div>
+
+            <div className="form-group checkbox-group">
+              <div className="form-check">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="hasHostSystem"
+                  checked={systemComponents.hasHostSystem}
+                  onChange={(e) => onSystemComponentsChange({
+                    ...systemComponents,
+                    hasHostSystem: e.target.checked
+                  })}
+                />
+                <label className="form-check-label" htmlFor="hasHostSystem">
+                  Host systeem aanwezig
+                </label>
+              </div>
+              <small className="form-text">
+                {SYSTEM_HOURS_CONFIG.hostSystemHoursPerConveyor} uur per conveyor bij host systeem
+              </small>
+            </div>
           </div>
 
           {/* Efficiëntiewinst configuratie */}

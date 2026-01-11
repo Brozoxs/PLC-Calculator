@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Project, ProjectConveyor, EfficiencyConfig } from './types';
+import { Project, ProjectConveyor, SystemComponents, EfficiencyConfig } from './types';
 import { calculateProjectHours, validateConveyorInput } from './calculations';
-import { CONVEYOR_TYPES, PROJECT_DEFAULTS } from './conveyorTypesConfig';
+import { CONVEYOR_TYPES, PROJECT_DEFAULTS, SYSTEM_HOURS_CONFIG, DEFAULT_SYSTEM_COMPONENTS } from './conveyorTypesConfig';
 import { ProjectInput } from './components/ProjectInput';
 import { ResultsDisplay } from './components/ResultsDisplay';
 import './App.css';
@@ -12,9 +12,10 @@ import './App.css';
  * Deze component beheert de state van het project en coördineert
  * de communicatie tussen het invoerscherm en het resultaten scherm.
  */
-const App: React.FC = () => {
+const App = () => {
   // State voor het huidige project
   const [projectName, setProjectName] = useState<string>(PROJECT_DEFAULTS.defaultProjectName);
+  const [systemComponents, setSystemComponents] = useState<SystemComponents>(DEFAULT_SYSTEM_COMPONENTS);
   const [projectConveyors, setProjectConveyors] = useState<ProjectConveyor[]>([]);
   const [calculatedProject, setCalculatedProject] = useState<Project | null>(null);
   const [efficiencyConfig, setEfficiencyConfig] = useState<EfficiencyConfig>({
@@ -94,7 +95,7 @@ const App: React.FC = () => {
       return;
     }
 
-    const project = calculateProjectHours(projectName, projectConveyors, efficiencyConfig);
+    const project = calculateProjectHours(projectName, systemComponents, projectConveyors, efficiencyConfig, SYSTEM_HOURS_CONFIG);
     setCalculatedProject(project);
   };
 
@@ -103,6 +104,7 @@ const App: React.FC = () => {
    */
   const resetProject = () => {
     setProjectName(PROJECT_DEFAULTS.defaultProjectName);
+    setSystemComponents(DEFAULT_SYSTEM_COMPONENTS);
     setProjectConveyors([]);
     setCalculatedProject(null);
   };
@@ -119,6 +121,8 @@ const App: React.FC = () => {
           <ProjectInput
             projectName={projectName}
             onProjectNameChange={setProjectName}
+            systemComponents={systemComponents}
+            onSystemComponentsChange={setSystemComponents}
             projectConveyors={projectConveyors}
             onAddConveyor={addConveyor}
             onRemoveConveyor={removeConveyor}

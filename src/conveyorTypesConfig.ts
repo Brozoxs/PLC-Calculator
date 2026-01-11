@@ -1,4 +1,4 @@
-import { ConveyorType } from './types';
+import { ConveyorType, SystemComponentHours, DEFAULT_SYSTEM_HOURS, DEFAULT_SYSTEM_COMPONENTS } from './types';
 
 /**
  * Configuratiebestand voor alle beschikbare conveyor types
@@ -9,91 +9,117 @@ import { ConveyorType } from './types';
  * - Minimum uren (voor efficiëntiewinst bescherming)
  * - Beschrijving voor gebruikers
  *
- * Deze waarden zijn gebaseerd op industriële standaarden en kunnen aangepast
+ * Deze waarden zijn gebaseerd op onze eigen standaarden en kunnen aangepast
  * worden per project of klant.
+ * momenteel wordt nog geen rekening gehouden met optimalisatie door generatie en emulatie in deze versie.
  */
 
 export const CONVEYOR_TYPES: ConveyorType[] = [
   {
     id: 'straight-conveyor',
-    name: 'Rechte Conveyor',
-    baseProgrammingHours: 8,
-    baseTestingHours: 4,
-    minimumHours: 3,
-    description: 'Standaard rechte conveyor voor transport van producten. Eenvoudige logica met snelheid- en positiecontrole.'
+    name: 'doorvoer Conveyor',
+    baseProgrammingHours: 2,
+    baseTestingHours: 2,
+    minimumHours: 2,
+    description: 'Standaard rechte conveyor voor transport van 1 pallet.'
   },
   {
-    id: 'curve-conveyor',
-    name: 'Kromme Conveyor',
-    baseProgrammingHours: 12,
-    baseTestingHours: 6,
-    minimumHours: 4,
-    description: 'Kromme conveyor met bochtmechanisme. Extra programmeertijd voor synchronisatie en positiecorrectie.'
+    id: 'straightx-conveyor',
+    name: 'DoorvoerX Conveyor',
+    baseProgrammingHours: 2,
+    baseTestingHours: 2,
+    minimumHours: 2,
+    description: 'Standaard rechte conveyor voor transport van meerdere pallets.'
   },
   {
-    id: 'inclined-conveyor',
-    name: 'Helleinde Conveyor',
-    baseProgrammingHours: 15,
-    baseTestingHours: 8,
-    minimumHours: 5,
-    description: 'Conveyor met helling voor hoogteverschil. Complexere besturing voor snelheid en veiligheid.'
+    id: 'Ontact-conveyor',
+    name: 'Aftact Conveyor',
+    baseProgrammingHours: 3,
+    baseTestingHours: 3,
+    minimumHours: 2,
+    description: 'Standaard rechte conveyor voor transport en ontacten van meerdere pallets 1 voor 1.'
   },
   {
     id: 'accumulation-conveyor',
-    name: 'Accumulatie Conveyor',
-    baseProgrammingHours: 20,
-    baseTestingHours: 12,
-    minimumHours: 6,
-    description: 'Conveyor met buffermogelijkheid. Geavanceerde logica voor product accumulatie en vrijgave.'
+    name: 'Intact Conveyor',
+    baseProgrammingHours: 3,
+    baseTestingHours: 3,
+    minimumHours: 3,
+    description: 'Conveyor met buffermogelijkheid voor het accumuleren van pallets.'
   },
   {
-    id: 'sorting-conveyor',
-    name: 'Sorteer Conveyor',
-    baseProgrammingHours: 25,
-    baseTestingHours: 15,
-    minimumHours: 8,
-    description: 'Conveyor met sorteermogelijkheid. Complex algoritme voor productherkenning en routing.'
+    id: 'Dropoff-conveyor',
+    name: 'Dropoff Conveyor',
+    baseProgrammingHours: 2,
+    baseTestingHours: 1,
+    minimumHours: 1,
+    description: 'Conveyor voor het afzetten van pallets.'
   },
   {
-    id: 'merger-conveyor',
-    name: 'Samenvoeg Conveyor',
-    baseProgrammingHours: 18,
-    baseTestingHours: 10,
-    minimumHours: 6,
-    description: 'Conveyor die meerdere lijnen samenvoegt. Synchronisatie tussen meerdere invoerlijnen.'
+    id: 'DropoffAGV-conveyor',
+    name: 'Dropoff AGV Conveyor',
+    baseProgrammingHours: 3,
+    baseTestingHours: 1,
+    minimumHours: 1,
+    description: 'Conveyor voor het afzetten van pallets met AGV.'
   },
   {
-    id: 'diverter-conveyor',
-    name: 'Afsplits Conveyor',
-    baseProgrammingHours: 16,
-    baseTestingHours: 9,
-    minimumHours: 5,
-    description: 'Conveyor met mogelijkheid om producten af te splitsen naar verschillende richtingen.'
+    id: 'PickingAGV-conveyor',
+    name: 'Picking AGV Conveyor',
+    baseProgrammingHours: 3,
+    baseTestingHours: 1,
+    minimumHours: 1,
+    description: 'Conveyor voor het opnemen van pallets met AGV.'
+  },
+  {
+    id: 'Picking-conveyor',
+    name: 'pick Conveyor',
+    baseProgrammingHours: 2,
+    baseTestingHours: 1,
+    minimumHours: 1,
+    description: 'Conveyor voor het opnemen van pallets.'
+  },
+  {
+    id: 'Chainlifter-conveyor',
+    name: 'Chainlifter Conveyor',
+    baseProgrammingHours: 4,
+    baseTestingHours: 3,
+    minimumHours: 3,
+    description: 'ketting heffer voor het in of uitsluizen van pallets 1 of meerdere richtingen.'
+  },
+  {
+    id: 'Rollerlifter-conveyor',
+    name: 'Rollerlifter Conveyor',
+    baseProgrammingHours: 4,
+    baseTestingHours: 3,
+    minimumHours: 3,
+    description: 'roller lifter voor kruispunten 1 of meerdere richtingen.'
   },
   {
     id: 'turntable-conveyor',
     name: 'Draaitafel Conveyor',
-    baseProgrammingHours: 22,
-    baseTestingHours: 14,
-    minimumHours: 7,
+    baseProgrammingHours: 6,
+    baseTestingHours: 3,
+    minimumHours: 3,
     description: 'Conveyor met roterende tafel. Complexere beweging en positiecontrole vereist.'
   },
   {
     id: 'vertical-conveyor',
-    name: 'Verticale Conveyor',
-    baseProgrammingHours: 30,
-    baseTestingHours: 18,
-    minimumHours: 10,
+    name: 'Lift Conveyor',
+    baseProgrammingHours: 8,
+    baseTestingHours: 8,
+    minimumHours: 8,
     description: 'Verticale transport conveyor. Geavanceerde besturing voor hoogte en veiligheid.'
-  },
-  {
-    id: 'pallet-conveyor',
-    name: 'Pallet Conveyor',
-    baseProgrammingHours: 14,
-    baseTestingHours: 7,
-    minimumHours: 4,
-    description: 'Conveyor voor pallet transport. Robuuste besturing voor zware lasten.'
-  }
+  }, 
+  { 
+    id: 'Special-conveyor',
+    name: 'specials',
+    baseProgrammingHours: 8,
+    baseTestingHours: 8,
+    minimumHours: 8,
+    description: 'Specials in het project waar meer uren voor nodig zijn telt me 8 programmerings- en testuren 16 uren per special.'
+
+  } 
 ];
 
 /**
@@ -132,3 +158,14 @@ export const PROJECT_DEFAULTS = {
   maxEfficiencyUnits: 10,     // Maximaal 10 conveyors krijgen efficiëntiewinst
   defaultProjectName: 'Nieuw Project'
 };
+
+// Systeem componenten uren configuratie
+export const SYSTEM_HOURS_CONFIG: SystemComponentHours = {
+  hoursPerPlc: 12,              // 12 uur per PLC
+  hoursPerCabinetHmi: 2,        // 2 uur per Cabinet HMI
+  hoursPerMobileHmi: 8,         // 8 uur per Mobile HMI
+  hostSystemHoursPerConveyor: 1 // 1 uur per conveyor bij host systeem
+};
+
+// Default systeem componenten
+export { DEFAULT_SYSTEM_COMPONENTS };

@@ -3,8 +3,12 @@ import {
   ProjectConveyor,
   ConveyorCalculation,
   Project,
+  SystemComponents,
+  SystemCalculation,
+  SystemComponentHours,
   EfficiencyConfig,
-  DEFAULT_EFFICIENCY_CONFIG
+  DEFAULT_EFFICIENCY_CONFIG,
+  DEFAULT_SYSTEM_COMPONENTS
 } from './types';
 
 /**
@@ -110,40 +114,98 @@ export function calculateConveyorHours(
 }
 
 /**
+ * Bereken uren voor systeem componenten
+ *
+ * @param systemComponents - De systeem componenten configuratie
+ * @param hoursConfig - De uren configuratie voor systeem componenten
+ * @param totalConveyors - Totaal aantal conveyors (voor host systeem berekening)
+ * @returns Gedetailleerde berekening van systeem componenten
+ */
+export function calculateSystemHours(
+  systemComponents: SystemComponents = DEFAULT_SYSTEM_COMPONENTS,
+  hoursConfig: SystemComponentHours,
+  totalConveyors: number = 0
+): SystemCalculation {
+  // Bereken PLC uren
+  const totalPlcHours = systemComponents.plcCount * hoursConfig.hoursPerPlc;
+
+  // Bereken HMI uren
+  const totalCabinetHmiHours = systemComponents.cabinetHmiCount * hoursConfig.hoursPerCabinetHmi;
+  const totalMobileHmiHours = systemComponents.mobileHmiCount * hoursConfig.hoursPerMobileHmi;
+  const totalHmiHours = totalCabinetHmiHours + totalMobileHmiHours;
+
+  // Bereken host systeem uren (alleen als aanwezig)
+  const totalHostSystemHours = systemComponents.hasHostSystem
+    ? totalConveyors * hoursConfig.hostSystemHoursPerConveyor
+    : 0;
+
+  // Externe bedrijven uren
+  const totalExternalHours = systemComponents.externalCompanyHours;
+
+  // Totaal systeem uren
+  const totalSystemHours = totalPlcHours + totalHmiHours + totalHostSystemHours + totalExternalHours;
+
+  return {
+    components: systemComponents,
+    hoursConfig,
+    totalPlcHours,
+    totalHmiHours,
+    totalHostSystemHours,
+    totalExternalHours,
+    totalSystemHours,
+  };
+}
+
+/**
  * Bereken alle uren voor een compleet project
  *
  * @param projectName - Naam van het project
+ * @param systemComponents - Systeem componenten configuratie
  * @param projectConveyors - Lijst van conveyors in het project
  * @param config - Configuratie voor efficiëntiewinst
+ * @param systemHoursConfig - Configuratie voor systeem componenten uren
  * @returns Compleet project met alle berekeningen
  */
 export function calculateProjectHours(
   projectName: string,
+  systemComponents: SystemComponents,
   projectConveyors: ProjectConveyor[],
-  config: EfficiencyConfig = DEFAULT_EFFICIENCY_CONFIG
+  config: EfficiencyConfig = DEFAULT_EFFICIENCY_CONFIG,
+  systemHoursConfig: SystemComponentHours
 ): Project {
   // Bereken voor elk conveyor type
   const calculations = projectConveyors.map(projectConveyor =>
     calculateConveyorHours(projectConveyor.conveyorType, projectConveyor.quantity, config)
   );
 
-  // Tel alle uren op
-  const totalProgrammingHours = calculations.reduce(
+  // Tel alle conveyor uren op
+  const conveyorProgrammingHours = calculations.reduce(
     (sum, calc) => sum + calc.totalProgrammingHours,
     0
   );
 
-  const totalTestingHours = calculations.reduce(
+  const conveyorTestingHours = calculations.reduce(
     (sum, calc) => sum + calc.totalTestingHours,
     0
   );
 
+  // Bereken systeem componenten uren
+  const totalConveyors = projectConveyors.reduce((sum, pc) => sum + pc.quantity, 0);
+  const systemCalculation = calculateSystemHours(systemComponents, systemHoursConfig, totalConveyors);
+
+  // Totale uren = conveyor uren + systeem uren
+  const totalProgrammingHours = conveyorProgrammingHours + systemCalculation.totalSystemHours;
+  const totalTestingHours = conveyorTestingHours;
+
   return {
     name: projectName,
+    systemComponents,
     conveyors: projectConveyors,
     totalProgrammingHours,
     totalTestingHours,
+    totalSystemHours: systemCalculation.totalSystemHours,
     calculations,
+    systemCalculation,
     lastCalculated: new Date(),
   };
 }
